@@ -49,5 +49,107 @@ body {
 }
 
 .img:hover {
-  box-shadow: 5px -5px 1px rgba(82, 92, 92, 0.2);
+  box-shadow: 5px -5px 1px rgba(120, 120, 120, 0.2);
+}
+
+/* Movie Details Page */
+#back:hover {
+  text-decoration: underline;
+  cursor: pointer;
+  text-decoration-color: #fff;
+}
+
+#back p {
+  color: #fff;
+  font-size: 20px;
+  margin: 1rem 2rem;
+}
+
+#details {
+  margin-top: 3rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+#poster {
+  max-height: 444px;
+  max-width: 333px;
+}
+
+.details-btn {
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1.75rem;
+  font-size: 20px;
+  display: block;
+  text-align: center;
+  margin: auto;
+  margin-top: 1rem;
+}
+
+#add {
+  background-color: #e16a00;
+}
+
+#remove {
+  background-color: #929292;
+}
+
+#details-box-1 {
+  margin: auto;
+}
+
+#title-wrap {
+  width: 95%;
+  margin: auto 0;
+}
+
+#title {
+  font-size: 5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+#reviews {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+#reviews li {
+  margin: 1.25rem 1rem;
+}
+
+#details-box-3 {
+  margin-top: 5rem;
+  text-align: center;
+  grid-column: span 2;
+}
+
+#extra-details {
+  width: 90%;
+  margin: 0 auto;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10%;
+}
+
+#extra-details li {
+  font-size: 18px;
+}
+
+#word-wrap {
+  width: 90%;
+  margin: 0 auto;
+}
+
+#summary {
+  text-align: left;
+  margin: 7rem 0;
+  font-size: 20px;
+}
+
+#loading {
+  margin: 4rem 5rem;
+  font-size: 60px;
 }

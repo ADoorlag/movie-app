@@ -1,14 +1,15 @@
-import {useState, useEffect} from "react"
+import React, {useState, useEffect} from "react"
 import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css';
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom"
 import MovieList from "./Components/MovieList"
 import Heading from "./Components/Heading"
 import Search from "./Components/Search"
 import AddFavorites from "./Components/AddFavorites"
 import RemoveFavorites from "./Components/removefavorites"
+import MovieDetails from "./Components/MovieDetails";
 
-
-function App() {
+const App = () => {
   const key= "d67bf1ae"
 
   const [movies, setMovies] = useState([])
@@ -44,7 +45,7 @@ function App() {
 
   const removeFavoriteMovie = movie => {
     const newFavoriteList = favorites.filter(
-      (favorite) => favorite.imdbID !== movie.imdbID
+      favorite => favorite.imdbID !== movie.imdbID
     )
 
     setFavorites(newFavoriteList)
@@ -58,10 +59,10 @@ function App() {
   },[searching])
 
   useEffect(() => {
-    const movieFavorites = JSON.parse(localStorage.getItem("react-movie-app-favorites"))
-
-    setFavorites(movieFavorites)
+      const movieFavorites = JSON.parse(localStorage.getItem("react-movie-app-favorites"))
+      setFavorites(movieFavorites)
   },[])
+
 
     // save to local storage
   const saveToLocalStorage = (items) => {
@@ -69,22 +70,31 @@ function App() {
   }
   
   return (
-    <div className="container-fluid movie-app">
-      <div className="row d-flex align-items-center mt-4 mb-4">
-        <Heading heading="Movies"/>
-        <Search searchValue={searchValue} setSearchValue={setSearchValue} searching={searching} setSearching={setSearching}/>
-      </div>
-      <div className="row">
-        <MovieList movies = {movies} FavoriteComponent = {AddFavorites}
-        handleFavoritesClick = {addFavoriteMovie}
-        /></div>
-      <div className="row d-flex align-items-center mt-4 mb-4">
-        <Heading heading = "Favorites"/></div>
-        <div className="row">
-          <MovieList movies = {favorites} FavoriteComponent = {RemoveFavorites}
-          handleFavoritesClick={removeFavoriteMovie}/>
-      </div>
-  </div>
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <div className="container-fluid movie-app">
+              <div className="row d-flex align-items-center mt-4 mb-4">
+                <Heading heading="Movies"/>
+                <Search searchValue={searchValue} setSearchValue={setSearchValue} searching={searching} setSearching={setSearching}/>
+              </div>
+              <div className="row">
+                <MovieList movies = {movies} FavoriteComponent = {AddFavorites}
+                handleFavoritesClick = {addFavoriteMovie}
+                /></div>
+              <div className="row d-flex align-items-center mt-4 mb-4">
+                <Heading heading = "Favorites"/></div>
+                <div className="row">
+                  <MovieList movies = {favorites} FavoriteComponent = {RemoveFavorites}
+                  handleFavoritesClick={removeFavoriteMovie}/>
+              </div>
+          </div>
+        </Route>
+        <Route path="/details/:imdbID">
+          <MovieDetails/>
+        </Route>
+      </Switch>
+    </Router>
   )
 }
 
