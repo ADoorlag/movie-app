@@ -42,6 +42,14 @@ body {
   text-align: center;
 }
 
+h1 {
+  font-size: 3em;
+}
+
+#error-message {
+  margin-left: 2rem;
+}
+
 /* images */
 .img {
   height: 325px;
@@ -53,9 +61,7 @@ body {
 }
 
 /* Movie Details Page */
-#back:hover {
-  text-decoration: underline;
-  cursor: pointer;
+#back {
   text-decoration-color: #fff;
 }
 
@@ -152,4 +158,80 @@ body {
 #loading {
   margin: 4rem 5rem;
   font-size: 60px;
+}
+
+#error {
+  margin: 4rem 5rem;
+  font-size: 60px;
+}
+
+#error-detail {
+  margin: 4rem 5rem;
+  font-size: 25px;
+}
+
+#retry {
+  margin: 2rem 6rem;
+}
+
+/* Details page Media Queries */
+@media (max-width: 700px) {
+  #details {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    justify-content: center;
+  }
+
+  #details-box-1 {
+    grid-column: span 2;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  #details-box-2 {
+    text-align: center;
+  }
+
+  #poster {
+    height: calc(444px * 0.8);
+    width: calc(333px * 0.8);
+  }
+
+  .details-btn {
+    padding: calc(0.5rem * 0.8) calc(1.75rem * 0.8);
+  }
+
+  #title-wrap {
+    width: 100%;
+  }
+
+  #title {
+    text-align: center;
+    font-size: 4rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  #reviews {
+    list-style: none;
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  #extra-details {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 5%;
+  }
+
+  #extra-details li {
+    font-size: 16px;
+  }
+
+  #summary {
+    font-size: 18px;
+  }
+
+  #error {
+    font-size: 30px;
+  }
 }

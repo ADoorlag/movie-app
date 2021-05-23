@@ -10,35 +10,48 @@ import RemoveFavorites from "./Components/removefavorites"
 import MovieDetails from "./Components/MovieDetails";
 
 const App = () => {
-  const key= "d67bf1ae"
 
   const [movies, setMovies] = useState([])
   const [searchValue, setSearchValue] = useState("")
   const [searching, setSearching] = useState(false)
   const [favorites, setFavorites] = useState([])
+  const [error, setError] = useState(false)
 
   const getMovieRequest = async (searchValue) => {
-    const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=${key}`
+    const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=123`
 
     const response = await fetch(url)
-    const responseJSON = await response.json()
+    if(response.ok){
+      const responseJSON = await response.json()
 
-    if(responseJSON.Search){
-      setMovies(responseJSON.Search)
-      setSearching(false)
+      if(responseJSON.Search){
+        setMovies(responseJSON.Search)
+        setSearching(false)
+        setError(false)
+      }
+      else{
+        throw Error("No search results available")
+      }
+    }
+    else{
+      throw Error("Unable to fetch search data")
     }
   }
 
   const addFavoriteMovie = movie => {
     const newFavoriteList = [...favorites, movie]
-    const map = {}
-    const newUniqueFavoriteList = []
-    newFavoriteList.forEach(el => {
-      if(!map[JSON.stringify(el)]){
-        map[JSON.stringify(el)] = true
-        newUniqueFavoriteList.push(el)
-      }
-    })
+
+    const getUniqueFavorites = (keyProps) => {
+      return Object.values(
+        newFavoriteList.reduce((uniqueMap, entry) => {
+          const key = keyProps.map((k) => entry[k]).join('|')
+          if (!(key in uniqueMap)) uniqueMap[key] = entry
+          return uniqueMap
+        }, {}),
+    )}
+
+    const newUniqueFavoriteList = getUniqueFavorites(["imdbID","Title"])
+
     setFavorites(newUniqueFavoriteList)
     saveToLocalStorage(newUniqueFavoriteList)
   }
@@ -53,8 +66,14 @@ const App = () => {
   }
 
   useEffect(() => {
-    if(searching)(
-      getMovieRequest(searchValue))
+    if(searching){
+      getMovieRequest(searchValue)
+      .catch( err => {
+        setSearching(false)
+        setError(true)
+        setMovies([])
+      })
+    }
       // eslint-disable-next-line
   },[searching])
 
@@ -78,10 +97,15 @@ const App = () => {
                 <Heading heading="Movies"/>
                 <Search searchValue={searchValue} setSearchValue={setSearchValue} searching={searching} setSearching={setSearching}/>
               </div>
+              {error && 
+                <div className="row">
+                  <h2 id="error-message">There was error attempting to fetch search data</h2>  
+                </div>
+              }
               <div className="row">
                 <MovieList movies = {movies} FavoriteComponent = {AddFavorites}
-                handleFavoritesClick = {addFavoriteMovie}
-                /></div>
+                handleFavoritesClick = {addFavoriteMovie}/>
+              </div>
               <div className="row d-flex align-items-center mt-4 mb-4">
                 <Heading heading = "Favorites"/></div>
                 <div className="row">
@@ -91,7 +115,7 @@ const App = () => {
           </div>
         </Route>
         <Route path="/details/:imdbID">
-          <MovieDetails/>
+          <MovieDetails favorites={favorites} setFavorites={setFavorites}/>
         </Route>
       </Switch>
     </Router>

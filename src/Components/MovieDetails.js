@@ -1,32 +1,48 @@
 import React, {useState, useEffect} from "react"
-import {useParams, useHistory} from "react-router-dom"
-import {Helmet} from "react-helmet"
+import {useParams, Link} from "react-router-dom"
+import {Helmet, HelmetProvider} from "react-helmet-async"
 import "../App.css"
 import AddFavorites from "./AddFavorites"
 import RemoveFavorites from "./removefavorites"
 
-const MovieDetails = () => {
-    const key= "d67bf1ae"
+const MovieDetails = ({favorites, setFavorites}) => {
     const {imdbID} = useParams()
 
     const getMovieDetails = async () => {
-        const url = `http://www.omdbapi.com/?i=${imdbID}&apikey=${key}`
-        
-        const response = await fetch(url)
-        const responseJSON = await response.json()
+        const url = `http://www.omdbapi.com/?i=${imdbID}&apikey=123`
 
-        setMovie(responseJSON)
-        setLoading(false)
+        const response = await fetch(url)
+            if(response.ok){
+                const responseJSON = await response.json()
+                setMovie(responseJSON)
+            }
+            else{
+                throw Error("Unable to fetch detail data")
+            }
     }
 
     const [movie, setMovie] = useState({})
     const [loading, setLoading] = useState(true)
     const [isInFavorites, setIsInFavorites] = useState(false)
-    const [favorites, setFavorites] = useState([])
-    const history = useHistory()
+    const [error, setError] = useState(false)
+    const [hasResponded, setHasResponded] = useState(false)
+    const [errorMessage, setErrorMessage] = useState("")
 
     useEffect(() => {
         getMovieDetails()
+        .then(() => {
+            setLoading(false)
+            setHasResponded(true)
+            setError(false)
+        })
+
+        .catch (err => {
+            setError(true)
+            setLoading(false)
+            setHasResponded(false)
+
+            setErrorMessage(err.message)
+        })
         // eslint-disable-next-line
 	}, [])
 
@@ -66,27 +82,33 @@ const MovieDetails = () => {
         localStorage.setItem("react-movie-app-favorites", JSON.stringify(items))
       }
 
-    const setMovieFavorites = () => {
-        const movieFavorites = JSON.parse(localStorage.getItem("react-movie-app-favorites"))
-            setFavorites(movieFavorites)
-    
-        history.push("/")
+      const retryRequest = () => {
         window.location.reload()
-    }
+      }
 
     return (
         <>
-            <div id="back" onClick={() => {setMovieFavorites()}}>
+            <Link to="/" id="back" onClick={() => document.title="Movie App"}>
                     <p>🡸 Return to Main Page</p>
-            </div>
-             {loading === false ?
+            </Link>
+            {error && 
+                <div>
+                    <h1 id="error">An error has occured while trying to retrieve the details</h1>
+                    <p id="error-detail">{`${errorMessage}`}</p>
+                    <input className="btn btn-primary" id="retry" type="button" value="Retry Request" onClick={() => retryRequest()}></input>
+                </div>
+            }
+            {loading && <h1 id="loading">Loading...</h1> }
+             {hasResponded &&
              <main id="details">
-                 <Helmet>
-                     <title>{`Details: ${movie.Title}`}</title>
-                 </Helmet>
+                 <HelmetProvider>
+                    <Helmet>
+                        <title>{`Details: ${movie.Title}`}</title>
+                    </Helmet>
+                </HelmetProvider>
                 <section id="details-box-1">
                     <img src={movie.Poster === undefined ? "N/A" : movie.Poster} alt={`${movie.Title} ${movie.Year}`} id="poster"/>
-                    {isInFavorites === true ? 
+                    {isInFavorites ? 
                         <button className="details-btn" id="remove" onClick={() => removeFavoriteMovie()}>
                             <RemoveFavorites/>
                         </button>
@@ -119,7 +141,6 @@ const MovieDetails = () => {
                     </div>
                 </section>
             </main>
-         : <h1 id="loading">Loading...</h1> 
         }
         </>
     )
