@@ -48,7 +48,7 @@ const MovieDetails = ({favorites, setFavorites}) => {
 	}, [])
 
     useEffect(() => {
-        const movieFavorites = JSON.parse(localStorage.getItem("react-movie-app-favorites"))
+        const movieFavorites = JSON.parse(localStorage.getItem("react-movie-app-favorites")) || []
         setFavorites(movieFavorites)
 
         let favoriteIDs = movieFavorites.map(favorites => favorites.imdbID)
