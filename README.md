@@ -6,7 +6,7 @@ This app is excellent for people who desire to either document their favorite mo
 
 ## Live Version
 
-The live version of this web app can be found HERE
+The live version of this web app can be found [HERE](https://open-movie-app.netlify.app/)
 
 ## How to download & install this app
 
