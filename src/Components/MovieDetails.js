@@ -10,7 +10,7 @@ const MovieDetails = ({favorites, setFavorites}) => {
 
     const getMovieDetails = async () => {
         const key = process.env.REACT_APP_API_KEY
-        const url = `http://www.omdbapi.com/?i=${imdbID}&apikey=${key}`
+        const url = `https://www.omdbapi.com/?i=${imdbID}&apikey=${key}`
 
         const response = await fetch(url)
             if(response.ok){
